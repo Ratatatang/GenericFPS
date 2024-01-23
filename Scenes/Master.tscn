@@ -1,0 +1,136 @@
+[gd_scene load_steps=13 format=3 uid="uid://ctahsvj88g1om"]
+
+[ext_resource type="Script" path="res://Scripts/Master.gd" id="1_rvnp3"]
+[ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://Scenes/Player/player.tscn" id="1_ukt8h"]
+[ext_resource type="PackedScene" uid="uid://dj26sacnhty4r" path="res://addons/devblocks/blocks/basic_block.tscn" id="2_i525w"]
+[ext_resource type="Texture2D" uid="uid://cgp4mvev1cbra" path="res://addons/devblocks/textures/purple/texture_01.png" id="3_dqmkl"]
+
+[sub_resource type="Animation" id="Animation_x7gqh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.513726, 0.513726, 0.513726, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_un1gp"]
+resource_name = "fadeFromPause"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.513726, 0.513726, 0.513726, 0.572549), Color(0.513726, 0.513726, 0.513726, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_6e524"]
+resource_name = "fadeToPause"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.513726, 0.513726, 0.513726, 0), Color(0.513726, 0.513726, 0.513726, 0.572549)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fy7jl"]
+_data = {
+"RESET": SubResource("Animation_x7gqh"),
+"fadeFromPause": SubResource("Animation_un1gp"),
+"fadeToPause": SubResource("Animation_6e524")
+}
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6g5uc"]
+
+[sub_resource type="Sky" id="Sky_ivwug"]
+sky_material = SubResource("ProceduralSkyMaterial_6g5uc")
+
+[sub_resource type="Environment" id="Environment_l5pxq"]
+background_mode = 2
+background_color = Color(0.2139, 0.570975, 0.69, 1)
+sky = SubResource("Sky_ivwug")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gtf0"]
+albedo_texture = ExtResource("3_dqmkl")
+uv1_scale = Vector3(3, 3, 3)
+uv1_triplanar = true
+
+[node name="Master" type="Node3D"]
+script = ExtResource("1_rvnp3")
+
+[node name="ScreenEffects" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="ScreenEffects"]
+offset_left = -70.0
+offset_top = -72.0
+offset_right = 1213.0
+offset_bottom = 709.0
+color = Color(0.513726, 0.513726, 0.513726, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ScreenEffects"]
+libraries = {
+"": SubResource("AnimationLibrary_fy7jl")
+}
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_l5pxq")
+
+[node name="DirectionalLight3d" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(0.966349, 0.250904, -0.056709, 0.182362, -0.512743, 0.838951, 0.181419, -0.821061, -0.541244, -0.00693703, 59.5145, -109.348)
+light_energy = 1.232
+light_indirect_energy = 0.884
+light_volumetric_fog_energy = 0.768
+shadow_enabled = true
+
+[node name="Player" parent="World" instance=ExtResource("1_ukt8h")]
+transform = Transform3D(1, 1.11759e-08, 1.67638e-08, 1.86265e-08, 1, -2.98023e-08, -5.58794e-09, 0, 1, 9.5088e-07, 1.69042, -7.62939e-06)
+
+[node name="BasicBlock" parent="World" instance=ExtResource("2_i525w")]
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="BasicBlock2" parent="World" instance=ExtResource("2_i525w")]
+transform = Transform3D(6.981, 0, 0, 0, 1, 0, 0, 0, 4.093, 5.58332, 0.908197, -22.4728)
+block_color_group = 1
+block_style = 2
+
+[node name="BasicBlock3" parent="World" instance=ExtResource("2_i525w")]
+transform = Transform3D(2, 0, 0, 0, 5, 0, 0, 0, 30, 12.0086, 2.95161, -0.0307474)
+block_color_group = 3
+block_style = 2
+
+[node name="BasicBlock4" parent="World" instance=ExtResource("2_i525w")]
+transform = Transform3D(9.10803, 0, 0, 0, 1, 0, 0, 0, 9, 6.49497, 2.07954, -31.5179)
+block_color_group = 1
+block_style = 2
+
+[node name="BasicBlock5" parent="World" instance=ExtResource("2_i525w")]
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 4, -13.0662, 2.84246, -1.36987)
+block_color_group = 1
+block_style = 2
+
+[node name="CsgPolygon3d" type="CSGPolygon3D" parent="World"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -9.06623, 0.523835, 0.0135)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 1, 0, 1, 1, 0)
+material = SubResource("StandardMaterial3D_2gtf0")

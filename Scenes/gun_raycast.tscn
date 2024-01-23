@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://n7swir10f5gf"]
+
+[node name="RayCast3d" type="RayCast3D"]
+transform = Transform3D(-4.37114e-09, 0, 0.1, 0, 0.1, 0, -0.1, 0, -4.37114e-09, 0, 0, 0)
+target_position = Vector3(700, 0, 0)

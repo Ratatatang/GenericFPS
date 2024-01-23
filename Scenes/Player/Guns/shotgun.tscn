@@ -1,0 +1,108 @@
+[gd_scene load_steps=12 format=3 uid="uid://ccsqom601qsjd"]
+
+[ext_resource type="Script" path="res://Scripts/itemData/gunClass.gd" id="1_nacy7"]
+[ext_resource type="AudioStream" uid="uid://boetdb561kn6f" path="res://Assets/Guns/SFX/ShotgunFire.wav" id="2_x5kq2"]
+[ext_resource type="AudioStream" uid="uid://cpl7f8qpwn3bd" path="res://Assets/Guns/SFX/DryFire.wav" id="3_1r8sh"]
+[ext_resource type="AudioStream" uid="uid://d4kjo4wibjlru" path="res://Assets/Guns/SFX/ShotgunReload.wav" id="4_awsjg"]
+[ext_resource type="ArrayMesh" uid="uid://cfwudfetrq510" path="res://Assets/Guns/Models/Shotgun.obj" id="5_a0yy4"]
+[ext_resource type="PackedScene" uid="uid://6occyvah5g0v" path="res://Scenes/Player/Guns/muzzleFlash.tscn" id="6_uv6s7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mng6i"]
+albedo_color = Color(0.329412, 0.137255, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lfvup"]
+albedo_color = Color(0.262745, 0.262745, 0.262745, 1)
+metallic = 0.25
+metallic_specular = 1.0
+
+[sub_resource type="Animation" id="Animation_arrwb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ItemModel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.0402626, -0.165351, -0.271691)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ItemModel:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.0464432, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_452tt"]
+resource_name = "fire"
+length = 0.25
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ItemModel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.24),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.0402626, -0.165351, -0.271691), Vector3(-0.0402626, -0.0372829, -0.067207), Vector3(-0.0402626, -0.165351, -0.271691)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ItemModel:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.24),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.0464432, 0), Vector3(0.171048, 0.0471315, 0.00802826), Vector3(0, 0.0464432, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1l4t8"]
+_data = {
+"RESET": SubResource("Animation_arrwb"),
+"fire": SubResource("Animation_452tt")
+}
+
+[node name="Shotgun" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.576, -0.14284, -0.548391)
+script = ExtResource("1_nacy7")
+fireRate = 0.25
+maxBullets = 8
+reloadRate = 6.65
+spread = 0.04
+bulletPattern = Array[Vector2]([Vector2(0, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0), Vector2(1, 1), Vector2(-1, -1), Vector2(-1, 1), Vector2(1, -1)])
+fireSound = ExtResource("2_x5kq2")
+emptySound = ExtResource("3_1r8sh")
+reloadSound = ExtResource("4_awsjg")
+animator_path = NodePath("ItemAnimator")
+
+[node name="ItemModel" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.199784, 0, 0.0092853, 0, 0.2, 0, -0.0092853, 0, 0.199784, -0.0402626, -0.165351, -0.271691)
+mesh = ExtResource("5_a0yy4")
+surface_material_override/0 = SubResource("StandardMaterial3D_mng6i")
+surface_material_override/1 = SubResource("StandardMaterial3D_lfvup")
+surface_material_override/2 = SubResource("StandardMaterial3D_lfvup")
+
+[node name="MuzzleFlash" parent="ItemModel" instance=ExtResource("6_uv6s7")]
+transform = Transform3D(1, 1.86265e-09, 3.72529e-09, -1.86265e-09, 1, 5.96046e-08, 3.72529e-09, 0, 1, 0.0174332, 0.384972, 2.96131)
+visible = false
+emitting = true
+
+[node name="ItemAnimator" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1l4t8")
+}

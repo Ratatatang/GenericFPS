@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://6occyvah5g0v"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cvmtx"]
+direction = Vector3(1, 0, 1)
+spread = 180.0
+flatness = 1.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.3
+initial_velocity_max = 0.5
+scale_min = 0.03
+scale_max = 0.03
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wdqbr"]
+shading_mode = 0
+albedo_color = Color(0.858824, 0.388235, 0, 0.407843)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qx1ay"]
+material = SubResource("StandardMaterial3D_wdqbr")
+
+[node name="MuzzleFlash" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76837e-07, 0.185759, 3.38529)
+emitting = false
+sub_emitter = NodePath(".")
+lifetime = 0.25
+one_shot = true
+speed_scale = 5.0
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_cvmtx")
+draw_pass_1 = SubResource("SphereMesh_qx1ay")

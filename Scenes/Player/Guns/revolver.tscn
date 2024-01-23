@@ -1,0 +1,116 @@
+[gd_scene load_steps=12 format=3 uid="uid://dp4ujx1id6sv1"]
+
+[ext_resource type="Script" path="res://Scripts/itemData/gunClass.gd" id="1_3dcbt"]
+[ext_resource type="AudioStream" uid="uid://be2i0lirowtsl" path="res://Assets/Guns/SFX/RevolverFire.wav" id="2_24b8i"]
+[ext_resource type="AudioStream" uid="uid://cpl7f8qpwn3bd" path="res://Assets/Guns/SFX/DryFire.wav" id="2_qwq3c"]
+[ext_resource type="AudioStream" uid="uid://pvkyugbkiip4" path="res://Assets/Guns/SFX/RevolverReload.wav" id="4_v5mcu"]
+[ext_resource type="ArrayMesh" uid="uid://nndqnq2vcxvw" path="res://Assets/Guns/Models/Revolver.obj" id="5_2lcis"]
+[ext_resource type="PackedScene" uid="uid://6occyvah5g0v" path="res://Scenes/Player/Guns/muzzleFlash.tscn" id="6_n3ikp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mng6i"]
+albedo_color = Color(0.329412, 0.137255, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lfvup"]
+albedo_color = Color(0.576471, 0.576471, 0.576471, 1)
+metallic = 0.25
+metallic_specular = 1.0
+
+[sub_resource type="Animation" id="Animation_arrwb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ItemModel:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ItemModel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_452tt"]
+resource_name = "fire"
+length = 0.25
+step = 0.015
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ItemModel:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-0.439102, -3.10257, -0.00430378), Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ItemModel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.0837942), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ItemModel/MuzzleFlash:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.015),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1l4t8"]
+_data = {
+"RESET": SubResource("Animation_arrwb"),
+"fire": SubResource("Animation_452tt")
+}
+
+[node name="Revolver" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.576, -0.212, -0.548391)
+script = ExtResource("1_3dcbt")
+fireRate = 0.25
+maxBullets = 6
+reloadRate = 3.36
+fireSound = ExtResource("2_24b8i")
+emptySound = ExtResource("2_qwq3c")
+reloadSound = ExtResource("4_v5mcu")
+animator_path = NodePath("ItemAnimator")
+
+[node name="ItemModel" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.1, 0, -2.53518e-07, 0, 0.1, 0, 2.53518e-07, 0, -0.1, 0, 0, 0)
+mesh = ExtResource("5_2lcis")
+surface_material_override/0 = SubResource("StandardMaterial3D_mng6i")
+surface_material_override/1 = SubResource("StandardMaterial3D_lfvup")
+
+[node name="MuzzleFlash" parent="ItemModel" instance=ExtResource("6_n3ikp")]
+transform = Transform3D(1, 1.86265e-09, 3.72529e-09, -1.86265e-09, 1, 5.96046e-08, 3.72529e-09, 0, 1, 0.0174332, 0.384972, 2.96131)
+visible = false
+
+[node name="ItemAnimator" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1l4t8")
+}
