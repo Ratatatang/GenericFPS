@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://7gv6q50fuutj"]
+[gd_scene load_steps=8 format=3 uid="uid://7gv6q50fuutj"]
 
 [ext_resource type="Script" path="res://Scripts/Player/player.gd" id="1_8u1cx"]
 [ext_resource type="PackedScene" uid="uid://dbduds4bsaaby" path="res://Scenes/Bullet/Bullet.tscn" id="2_je25s"]
 [ext_resource type="PackedScene" uid="uid://n7swir10f5gf" path="res://Scenes/gun_raycast.tscn" id="3_b1uyi"]
 [ext_resource type="Texture2D" uid="uid://bm1l1r4r163ex" path="res://Assets/UI/bullet.png" id="3_tqdck"]
+[ext_resource type="Script" path="res://Scenes/Player/Hand.gd" id="4_a2opn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_emkox"]
 
@@ -24,10 +25,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0953066)
 
 [node name="Camera3d" type="Camera3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.468479, -0.463024)
+cull_mask = 1048573
+fov = 80.0
 
 [node name="RayCast3d" parent="Head/Camera3d" instance=ExtResource("3_b1uyi")]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 target_position = Vector3(0, 0, -700)
+
+[node name="Hand" type="Node3D" parent="Head/Camera3d"]
+script = ExtResource("4_a2opn")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Head/Camera3d/Hand"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="Head/Camera3d/Hand/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+canvas_cull_mask = 4294967293
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="GunCam" type="Camera3D" parent="Head/Camera3d/Hand/SubViewportContainer/SubViewport"]
+cull_mask = 1047554
+fov = 80.0
 
 [node name="BulletCounter" type="Sprite2D" parent="."]
 position = Vector2(1122, 618)

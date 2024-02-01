@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/itemData/gunClass.gd" id="1_qwgys"]
 [ext_resource type="AudioStream" uid="uid://t4p3pmmja8eg" path="res://Assets/Guns/SFX/PistolFire.wav" id="2_vit5y"]
 [ext_resource type="AudioStream" uid="uid://cpl7f8qpwn3bd" path="res://Assets/Guns/SFX/DryFire.wav" id="3_8cb41"]
-[ext_resource type="AudioStream" uid="uid://vb4j7nvc5vv2" path="res://Assets/Guns/SFX/RifleReload.wav" id="4_cocdg"]
+[ext_resource type="AudioStream" uid="uid://jt30hbotrxs8" path="res://Assets/Guns/SFX/AssaultRifleReload.wav" id="4_d7j8e"]
 [ext_resource type="ArrayMesh" uid="uid://ovxbk471h2k3" path="res://Assets/Guns/Models/AssaultRifle.obj" id="5_0mxhm"]
 [ext_resource type="PackedScene" uid="uid://6occyvah5g0v" path="res://Scenes/Player/Guns/muzzleFlash.tscn" id="6_46mwy"]
 
@@ -25,13 +25,25 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0)]
+"values": [Vector3(0, 0.0468788, 0.0797047)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ItemModel:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -2.48353e-08, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_452tt"]
 resource_name = "fire"
-length = 0.1
-step = 0.05
+length = 0.08
+step = 0.015
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -39,10 +51,10 @@ tracks/0/path = NodePath("ItemModel:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1),
+"times": PackedFloat32Array(0, 0.03, 0.075),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.0797047), Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0, 0.0468788, 0.0797047), Vector3(0, 0, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -51,10 +63,22 @@ tracks/1/path = NodePath("ItemModel/MuzzleFlash:emitting")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.05),
+"times": PackedFloat32Array(0.025),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ItemModel:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.03, 0.075),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -2.48353e-08, 0), Vector3(0.0786322, 0.000860385, 0.0218727), Vector3(0, -2.48353e-08, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1l4t8"]
@@ -69,14 +93,15 @@ script = ExtResource("1_qwgys")
 fireMode = 1
 fireRate = 0.1
 maxBullets = 40
-reloadRate = 0.86
+reloadRate = 3.6
 fireSound = ExtResource("2_vit5y")
 emptySound = ExtResource("3_8cb41")
-reloadSound = ExtResource("4_cocdg")
+reloadSound = ExtResource("4_d7j8e")
 animator_path = NodePath("ItemAnimator")
 
 [node name="ItemModel" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+transform = Transform3D(0.3, 0, -7.45059e-09, 0, 0.3, 0, 7.45059e-09, 0, 0.3, 0, 0.0468788, 0.0797047)
+layers = 2
 mesh = ExtResource("5_0mxhm")
 surface_material_override/0 = SubResource("StandardMaterial3D_q5fxt")
 surface_material_override/1 = SubResource("StandardMaterial3D_pt7vb")

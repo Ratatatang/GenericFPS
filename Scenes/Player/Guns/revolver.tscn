@@ -99,9 +99,12 @@ fireSound = ExtResource("2_24b8i")
 emptySound = ExtResource("2_qwq3c")
 reloadSound = ExtResource("4_v5mcu")
 animator_path = NodePath("ItemAnimator")
+swayLeft = Vector3(0, 0.018, 0)
+swayRight = Vector3(0, -0.018, 0)
 
 [node name="ItemModel" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.1, 0, -2.53518e-07, 0, 0.1, 0, 2.53518e-07, 0, -0.1, 0, 0, 0)
+layers = 2
 mesh = ExtResource("5_2lcis")
 surface_material_override/0 = SubResource("StandardMaterial3D_mng6i")
 surface_material_override/1 = SubResource("StandardMaterial3D_lfvup")

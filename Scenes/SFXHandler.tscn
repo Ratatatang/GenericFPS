@@ -4,3 +4,6 @@
 
 [node name="SFXHandler" type="Node"]
 script = ExtResource("1_oq70h")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -80.0

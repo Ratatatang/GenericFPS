@@ -1,32 +1,40 @@
 extends CharacterBody3D
 
-const SPEED = 5.0
-const JUMP_VELOCITY = 4.5
-const BOB_FREQUENCY = 2.0
-const BOB_AMP = 0.08
+const SPEED = 5.7
+const SPRINT_SPEED = 6.7
+const JUMP_VELOCITY = 5.6
+const BOB_FREQUENCY = 2.4
+const BOB_AMP = 0.05
 
 @export var _bullet_scene : PackedScene
 
 @onready var gunTimer = $gunTimer
+
 @onready var gunRay = $Head/Camera3d/RayCast3d as RayCast3D
 @onready var camera = $Head/Camera3d as Camera3D
-@onready var bulletCounter = $BulletCounter/BulletLabel
-@onready var gunModel = $Head/Camera3d/GunModel
+@onready var gunCamera = $Head/Camera3d/Hand/SubViewportContainer/SubViewport/GunCam
+@onready var hand = $Head/Camera3d/Hand
 
-var minSensitivity = 250
-var mouseSensitivity = 350
+@onready var bulletCounter = $BulletCounter/BulletLabel
+
 var mouse_relative_x = 0
 var mouse_relative_y = 0
 
 var t_bob = 0.0
 var playerHeight = 0.7
 
+var classData
 var equiptGun
 
-var attackHeld = false
+var itemsNum = 3
 
-#var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var gravity = 9.8
+var attackHeld = false
+var downSights = false
+var sprinting = false
+
+var breakReload = false
+
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var itemsList = {
 	0: "pistol",
@@ -39,7 +47,7 @@ var loadedItems = {
 	"pistol": null,
 	"revolver": null,
 	"assault_rifle": null,
-	"shotgun": null
+	"shotgun": null,
 }
 
 var currentItem = 0
@@ -47,10 +55,15 @@ var currentItem = 0
 func _ready():
 	gunRay.add_exception(self)
 	
+	loadPlayerClass("res://Scenes/Player/classes/sheriffPreist.gd")
+	
 	for gun in itemsList.values():
 		loadItemData(gun)
 	
-	equiptItem("pistol")
+	equiptItem(itemsList.get(0))
+
+func _process(delta):
+	gunCamera.global_transform = camera.global_transform
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -65,11 +78,19 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveUp", "moveDown")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		if Input.is_action_just_pressed("sprint"):
+			sprinting = true
+			
+		if(sprinting):
+			velocity.x = direction.x * SPRINT_SPEED
+			velocity.z = direction.z * SPRINT_SPEED
+		else:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+		sprinting = false
 	
 	#Head Bob
 	t_bob += delta * velocity.length() * float(is_on_floor())
@@ -101,14 +122,16 @@ func headbob(time) -> Vector3:
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		rotation.y -= event.relative.x / mouseSensitivity
-		camera.rotation.x -= event.relative.y / mouseSensitivity
+		var sensitivity = 1000-GlobalSettings.MouseSensitivity
+		rotation.y -= event.relative.x / sensitivity
+		camera.rotation.x -= event.relative.y / sensitivity
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 		mouse_relative_x = clamp(event.relative.x, -50, 50)
 		mouse_relative_y = clamp(event.relative.y, -50, 10)
 	
 	if(equiptGun.fireMode == 0):
 		if event.is_action_pressed("attack"):
+			breakReload = true
 			if(gunTimer.is_stopped() == true):
 				if(equiptGun.bullets >= 1):
 					equiptGun.bullets -= 1
@@ -133,24 +156,55 @@ func _input(event):
 					
 	elif(equiptGun.fireMode == 1):
 		if(event.is_action_pressed("attack")):
+			breakReload = true
 			attackHeld = true
 			if(equiptGun.bullets < 1):
 				SFXHandler.playSFX(equiptGun.emptySound, self)
 				
 		if(event.is_action_released("attack")):
 			attackHeld = false
-				
-	if event.is_action_pressed("reload"):
-		gunTimer.wait_time = equiptGun.reloadRate
-		gunTimer.start()
-		SFXHandler.playSFX(equiptGun.reloadSound, self)
-		
-		await gunTimer.timeout
-		
-		gunTimer.wait_time = equiptGun.fireRate
-		equiptGun.bullets = equiptGun.maxBullets
-		bulletCounter.text = str(equiptGun.bullets) + "/" + str(equiptGun.maxBullets)
 	
+	if(event.is_action_pressed("altMouse")):
+		downSights = true
+		await equiptGun.animator.animation_finished
+		equiptGun.animator.play("sights")
+	
+	elif(event.is_action_released("altMouse")):
+		downSights = false
+		await equiptGun.animator.animation_finished
+		equiptGun.animator.play("sights")
+				
+	if event.is_action_pressed("reload") and gunTimer.is_stopped() and !equiptGun.bullets >= equiptGun.maxBullets:
+		breakReload = false
+		if(equiptGun.loadingMode == 0):
+			gunTimer.wait_time = equiptGun.reloadRate
+			gunTimer.start()
+			SFXHandler.playSFX(equiptGun.reloadSound, self)
+		
+			await gunTimer.timeout
+		
+			gunTimer.wait_time = equiptGun.fireRate
+			equiptGun.bullets = equiptGun.maxBullets
+			bulletCounter.text = str(equiptGun.bullets) + "/" + str(equiptGun.maxBullets)
+		elif(equiptGun.loadingMode == 1):
+			while(true):
+				if(breakReload or equiptGun.bullets >= equiptGun.maxBullets):
+					gunTimer.wait_time = equiptGun.ReloadFinishTime
+					gunTimer.start()
+					SFXHandler.playSFX(equiptGun.loadFinishedSound, self)
+					break
+				elif(equiptGun.bullets < equiptGun.maxBullets):
+					gunTimer.wait_time = equiptGun.reloadRate
+					gunTimer.start()
+					SFXHandler.playSFX(equiptGun.reloadSound, self)
+				
+					await gunTimer.timeout
+				
+					gunTimer.wait_time = equiptGun.fireRate
+					equiptGun.bullets += 1
+					bulletCounter.text = str(equiptGun.bullets) + "/" + str(equiptGun.maxBullets)
+		breakReload = false
+			
 	if(!gunTimer.is_stopped()):
 		pass
 	
@@ -159,36 +213,68 @@ func _input(event):
 		equiptItem(itemsList.get(currentItem))
 	
 	elif event.is_action_pressed("num2"):
-		currentItem = 1
+		currentItem = clamp(1, 0, itemsNum)
 		equiptItem(itemsList.get(currentItem))
 		
 	elif event.is_action_pressed("num3"):
-		currentItem = 2
+		currentItem = clamp(2, 0, itemsNum)
 		equiptItem(itemsList.get(currentItem))
 	
 	elif event.is_action_pressed("num4"):
-		currentItem = 3
+		currentItem = clamp(3, 0, itemsNum)
 		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num5"):
+		currentItem = clamp(4, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num6"):
+		currentItem = clamp(5, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num7"):
+		currentItem = clamp(6, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num8"):
+		currentItem = clamp(7, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num9"):
+		currentItem = clamp(8, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("num0"):
+		currentItem = clamp(9, 0, itemsNum)
+		equiptItem(itemsList.get(currentItem))
+		
 	
 	elif event.is_action_pressed("scrollDown"):
-		currentItem += 1
-		
-		if(currentItem > 3):
-			currentItem = 0
-		
-		equiptItem(itemsList.get(currentItem))
-	
-	elif event.is_action_pressed("scrollUp"):
 		currentItem -= 1
 		
 		if(currentItem < 0):
-			currentItem = 3
-		
+			currentItem = itemsNum
 		equiptItem(itemsList.get(currentItem))
+	
+	elif event.is_action_pressed("scrollUp"):
+		currentItem += 1
+		
+		if(currentItem > itemsNum):
+			currentItem = 0
+		equiptItem(itemsList.get(currentItem))
+
+func loadPlayerClass(className):
+	classData = load(className).new()
+	itemsList = classData.items
+	itemsNum = classData.itemsNum
+	loadedItems.clear()
+	
+	for value in itemsList.values():
+		loadedItems.merge({value: null})
 
 func loadItemData(itemName):
 	var itemInstance = load("res://Scenes/Player/Guns/%s.tscn" % itemName).instantiate()
-	camera.add_child(itemInstance)
+	hand.add_child(itemInstance)
 	itemInstance.visible = false
 	
 	itemInstance.bullets = itemInstance.maxBullets
@@ -203,6 +289,10 @@ func equiptItem(itemName):
 	
 	equiptGun = loadedItems.get(itemName)
 	equiptGun.visible = true
+	
+	hand.swayLeft = equiptGun.swayLeft
+	hand.swayRight = equiptGun.swayRight
+	hand.swayNormal = equiptGun.swayNormal
 	
 	gunTimer.wait_time = equiptGun.fireRate
 	

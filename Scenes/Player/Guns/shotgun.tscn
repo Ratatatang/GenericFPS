@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://ccsqom601qsjd"]
+[gd_scene load_steps=13 format=3 uid="uid://ccsqom601qsjd"]
 
 [ext_resource type="Script" path="res://Scripts/itemData/gunClass.gd" id="1_nacy7"]
 [ext_resource type="AudioStream" uid="uid://boetdb561kn6f" path="res://Assets/Guns/SFX/ShotgunFire.wav" id="2_x5kq2"]
 [ext_resource type="AudioStream" uid="uid://cpl7f8qpwn3bd" path="res://Assets/Guns/SFX/DryFire.wav" id="3_1r8sh"]
-[ext_resource type="AudioStream" uid="uid://d4kjo4wibjlru" path="res://Assets/Guns/SFX/ShotgunReload.wav" id="4_awsjg"]
+[ext_resource type="AudioStream" uid="uid://cl8l0s1klpsfs" path="res://Assets/Guns/SFX/ShotgunReload.wav" id="4_awsjg"]
 [ext_resource type="ArrayMesh" uid="uid://cfwudfetrq510" path="res://Assets/Guns/Models/Shotgun.obj" id="5_a0yy4"]
+[ext_resource type="AudioStream" uid="uid://bjel43t10fede" path="res://Assets/Guns/SFX/ShotgunRack.wav" id="5_e8yw5"]
 [ext_resource type="PackedScene" uid="uid://6occyvah5g0v" path="res://Scenes/Player/Guns/muzzleFlash.tscn" id="6_uv6s7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mng6i"]
@@ -80,18 +81,22 @@ _data = {
 [node name="Shotgun" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.576, -0.14284, -0.548391)
 script = ExtResource("1_nacy7")
+loadingMode = 1
 fireRate = 0.25
 maxBullets = 8
-reloadRate = 6.65
+reloadRate = 1.34
+ReloadFinishTime = 0.48
 spread = 0.04
 bulletPattern = Array[Vector2]([Vector2(0, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0), Vector2(1, 1), Vector2(-1, -1), Vector2(-1, 1), Vector2(1, -1)])
 fireSound = ExtResource("2_x5kq2")
 emptySound = ExtResource("3_1r8sh")
 reloadSound = ExtResource("4_awsjg")
+loadFinishedSound = ExtResource("5_e8yw5")
 animator_path = NodePath("ItemAnimator")
 
 [node name="ItemModel" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.199784, 0, 0.0092853, 0, 0.2, 0, -0.0092853, 0, 0.199784, -0.0402626, -0.165351, -0.271691)
+transform = Transform3D(0.199784, 0, 0.00928529, 0, 0.2, 0, -0.00928529, 0, 0.199784, -0.0402626, -0.165351, -0.271691)
+layers = 2
 mesh = ExtResource("5_a0yy4")
 surface_material_override/0 = SubResource("StandardMaterial3D_mng6i")
 surface_material_override/1 = SubResource("StandardMaterial3D_lfvup")
@@ -100,7 +105,6 @@ surface_material_override/2 = SubResource("StandardMaterial3D_lfvup")
 [node name="MuzzleFlash" parent="ItemModel" instance=ExtResource("6_uv6s7")]
 transform = Transform3D(1, 1.86265e-09, 3.72529e-09, -1.86265e-09, 1, 5.96046e-08, 3.72529e-09, 0, 1, 0.0174332, 0.384972, 2.96131)
 visible = false
-emitting = true
 
 [node name="ItemAnimator" type="AnimationPlayer" parent="."]
 libraries = {

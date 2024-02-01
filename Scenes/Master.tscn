@@ -1,8 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://ctahsvj88g1om"]
+[gd_scene load_steps=15 format=3 uid="uid://ctahsvj88g1om"]
 
 [ext_resource type="Script" path="res://Scripts/Master.gd" id="1_rvnp3"]
 [ext_resource type="PackedScene" uid="uid://7gv6q50fuutj" path="res://Scenes/Player/player.tscn" id="1_ukt8h"]
 [ext_resource type="PackedScene" uid="uid://dj26sacnhty4r" path="res://addons/devblocks/blocks/basic_block.tscn" id="2_i525w"]
+[ext_resource type="Script" path="res://Scenes/Setting.gd" id="2_tokpb"]
+[ext_resource type="Script" path="res://Scripts/Player/Menu.gd" id="2_vwntx"]
 [ext_resource type="Texture2D" uid="uid://cgp4mvev1cbra" path="res://addons/devblocks/textures/purple/texture_01.png" id="3_dqmkl"]
 
 [sub_resource type="Animation" id="Animation_x7gqh"]
@@ -18,6 +20,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(0.513726, 0.513726, 0.513726, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../MenuScreens:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_un1gp"]
@@ -35,6 +49,32 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(0.513726, 0.513726, 0.513726, 0.572549), Color(0.513726, 0.513726, 0.513726, 0)]
 }
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../MenuScreens/Settings")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"updateSettings"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../MenuScreens:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_6e524"]
 resource_name = "fadeToPause"
@@ -50,6 +90,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(0.513726, 0.513726, 0.513726, 0), Color(0.513726, 0.513726, 0.513726, 0.572549)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../MenuScreens:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fy7jl"]
@@ -90,6 +142,222 @@ color = Color(0.513726, 0.513726, 0.513726, 0)
 libraries = {
 "": SubResource("AnimationLibrary_fy7jl")
 }
+
+[node name="MenuScreens" type="CanvasLayer" parent="."]
+visible = false
+script = ExtResource("2_vwntx")
+
+[node name="Menu" type="Control" parent="MenuScreens"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -172.0
+offset_top = -20.0
+offset_right = 172.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuScreens/Menu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.0
+offset_top = -186.0
+offset_right = 227.0
+offset_bottom = 186.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.356863, 0.356863, 0.356863, 1)
+
+[node name="Label" type="RichTextLabel" parent="MenuScreens/Menu"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -21.5
+offset_top = -167.0
+offset_right = 33.5
+offset_bottom = -127.0
+grow_horizontal = 2
+text = "Menu"
+
+[node name="Settings" type="Button" parent="MenuScreens/Menu"]
+layout_mode = 0
+offset_left = -19.0
+offset_top = -117.0
+offset_right = 102.0
+offset_bottom = -76.0
+text = "Settings"
+
+[node name="Multiplayer" type="Button" parent="MenuScreens/Menu"]
+layout_mode = 0
+offset_left = -19.0
+offset_top = -62.0
+offset_right = 102.0
+offset_bottom = -21.0
+text = "Multiplayer"
+
+[node name="Settings" type="Control" parent="MenuScreens"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -172.0
+offset_top = -20.0
+offset_right = 172.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_tokpb")
+
+[node name="ColorRect" type="ColorRect" parent="MenuScreens/Settings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.0
+offset_top = -186.0
+offset_right = 227.0
+offset_bottom = 186.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.356863, 0.356863, 0.356863, 1)
+
+[node name="Label" type="RichTextLabel" parent="MenuScreens/Settings"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -31.5
+offset_top = -168.0
+offset_right = 67.5
+offset_bottom = -128.0
+grow_horizontal = 2
+text = "Settings"
+
+[node name="VolumeSlider" type="HSlider" parent="MenuScreens/Settings"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -116.0
+offset_right = 342.0
+offset_bottom = -100.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuScreens/Settings/VolumeSlider"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = -20.0
+offset_right = 154.0
+offset_bottom = 20.0
+mouse_filter = 2
+text = "SFX Volume"
+
+[node name="MouseSensitivity" type="HSlider" parent="MenuScreens/Settings"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 3.0
+offset_right = 342.0
+offset_bottom = 19.0
+max_value = 800.0
+value = 650.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuScreens/Settings/MouseSensitivity"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = -20.0
+offset_right = 154.0
+offset_bottom = 20.0
+mouse_filter = 2
+text = "Mouse Sensitivity"
+
+[node name="Multiplayer" type="Control" parent="MenuScreens"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -172.0
+offset_top = -20.0
+offset_right = 172.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MenuScreens/Multiplayer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -227.0
+offset_top = -186.0
+offset_right = 227.0
+offset_bottom = 186.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.356863, 0.356863, 0.356863, 1)
+
+[node name="Label" type="RichTextLabel" parent="MenuScreens/Multiplayer"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -39.5
+offset_top = -168.0
+offset_right = 59.5
+offset_bottom = -128.0
+grow_horizontal = 2
+text = "Multiplayer"
+
+[node name="IP" type="TextEdit" parent="MenuScreens/Multiplayer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 1.355
+anchor_bottom = 1.887
+offset_left = -221.0
+offset_top = 105.0
+offset_right = -294.12
+offset_bottom = 86.52
+scale = Vector2(2, 2)
+placeholder_text = "IP"
+
+[node name="Join" type="Button" parent="MenuScreens/Multiplayer"]
+layout_mode = 0
+offset_left = -42.0
+offset_top = -135.0
+offset_right = 85.0
+offset_bottom = -97.0
+text = "Join
+"
+
+[node name="Host" type="Button" parent="MenuScreens/Multiplayer"]
+layout_mode = 0
+offset_left = 257.0
+offset_top = -135.0
+offset_right = 384.0
+offset_bottom = -97.0
+text = "Host"
 
 [node name="World" type="Node3D" parent="."]
 
@@ -134,3 +402,6 @@ transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -9.06623, 0.523835, 0.0135)
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 1, 0, 1, 1, 0)
 material = SubResource("StandardMaterial3D_2gtf0")
+
+[connection signal="pressed" from="MenuScreens/Menu/Settings" to="MenuScreens" method="_on_settings_pressed"]
+[connection signal="pressed" from="MenuScreens/Menu/Multiplayer" to="MenuScreens" method="_on_multiplayer_pressed"]

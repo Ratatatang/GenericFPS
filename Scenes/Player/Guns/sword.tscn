@@ -1,0 +1,84 @@
+[gd_scene load_steps=14 format=3 uid="uid://d1xyxbhxjlpou"]
+
+[ext_resource type="Script" path="res://Scripts/itemData/gunClass.gd" id="1_qo0o2"]
+[ext_resource type="AudioStream" uid="uid://t4p3pmmja8eg" path="res://Assets/Guns/SFX/PistolFire.wav" id="2_8ixy0"]
+[ext_resource type="AudioStream" uid="uid://cpl7f8qpwn3bd" path="res://Assets/Guns/SFX/DryFire.wav" id="3_f5df6"]
+[ext_resource type="AudioStream" uid="uid://usufxnkaal76" path="res://Assets/Guns/SFX/Reload.wav" id="4_5yuct"]
+[ext_resource type="ArrayMesh" uid="uid://dna5c8tthhime" path="res://Assets/Guns/Models/sword.obj" id="5_l0usq"]
+[ext_resource type="PackedScene" uid="uid://6occyvah5g0v" path="res://Scenes/Player/Guns/muzzleFlash.tscn" id="6_fmav7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q5fxt"]
+albedo_color = Color(0.407843, 0.407843, 0.407843, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pt7vb"]
+albedo_color = Color(0.172549, 0.172549, 0.172549, 1)
+
+[sub_resource type="Animation" id="Animation_arrwb"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_452tt"]
+resource_name = "fire"
+step = 0.05
+
+[sub_resource type="Animation" id="Animation_6p1t0"]
+resource_name = "hip"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-0.0110937, -0.212, -0.385678), Vector3(0.576, -0.212, -0.587)]
+}
+
+[sub_resource type="Animation" id="Animation_f44kd"]
+resource_name = "sights"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0.576, -0.212, -0.587), Vector3(-0.0110937, -0.212, -0.385678)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1l4t8"]
+_data = {
+"RESET": SubResource("Animation_arrwb"),
+"fire": SubResource("Animation_452tt"),
+"hip": SubResource("Animation_6p1t0"),
+"sights": SubResource("Animation_f44kd")
+}
+
+[node name="Sword" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.192763, -0.952948, -0.587)
+script = ExtResource("1_qo0o2")
+fireRate = 0.15
+maxBullets = 20
+reloadRate = 1.25
+fireSound = ExtResource("2_8ixy0")
+emptySound = ExtResource("3_f5df6")
+reloadSound = ExtResource("4_5yuct")
+animator_path = NodePath("ItemAnimator")
+
+[node name="ItemModel" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.5, 7.54979e-08, 3.30012e-15, 0, -2.18557e-08, 0.5, 7.54979e-08, 0.5, 2.18557e-08, 0.071663, 0.851605, 0.256823)
+mesh = ExtResource("5_l0usq")
+surface_material_override/0 = SubResource("StandardMaterial3D_q5fxt")
+surface_material_override/1 = SubResource("StandardMaterial3D_pt7vb")
+
+[node name="MuzzleFlash" parent="ItemModel" instance=ExtResource("6_fmav7")]
+visible = false
+
+[node name="ItemAnimator" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1l4t8")
+}
